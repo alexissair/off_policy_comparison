@@ -19,7 +19,7 @@ def simulate_episode():
 
 def test_policy():
     policy = Policy(epsilon=0.5, verbose=True)
-    policy.run_episode(state_index=0)
+    policy.run_multiple_episode()
     print(policy.q)
     print(policy.operations)
 
