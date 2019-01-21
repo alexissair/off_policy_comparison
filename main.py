@@ -19,12 +19,8 @@ def simulate_episode():
 
 def test_policy():
     policy = Policy(epsilon=0.5, verbose=True)
-    print(policy.Q)
-    print('For state 0')
-    for i in range(10):
-        print(policy.get_action_eps_greedy(0))
-    print('For state 1')
-    for i in range(10):
-        print(policy.get_action_eps_greedy(1))
+    policy.run_episode(state_index=0)
+    print(policy.q)
+    print(policy.operations)
 
 test_policy()
