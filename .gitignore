@@ -1,5 +1,5 @@
 env
 .vscode
-*.ipynb
+*.ipynb*
 *.pyc
 __pycache__

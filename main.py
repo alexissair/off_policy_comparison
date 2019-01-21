@@ -23,4 +23,4 @@ def test_policy():
     print(policy.q)
     print(policy.operations)
 
-test_policy()
+
