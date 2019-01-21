@@ -2,7 +2,7 @@ import numpy as np
 from gym.spaces.discrete import Discrete
 
 class Policy():
-    def __init__(self, env=None, state_space=['start', 'end'], state_terminal = [False, True], action_space=['a', 'b'], alpha=0.1, epsilon=0.1, gamma=0.1, n=5, algorithm_used='tb', verbose=False):
+    def __init__(self, env=None, state_space=['start', 'end'], state_terminal = [False, True], action_space=['a', 'b'], alpha=0.1, epsilon=0.1, gamma=0.1, n=100, algorithm_used='tb', verbose=False):
         if env is not None:
             self.init_with_env(env)
         else:
@@ -166,15 +166,13 @@ class Policy():
                 break
         return g
 
-    def play_episode(self, state_index=None, verbose=False):
+    def play_episode(self, state_index=None, verbose=False, render=False):
         state_index = self.init_state_index(state_index=state_index)
         is_terminal_state = False
         total_reward = 0
         while not is_terminal_state:
-            try:
-                self.env.render()
-            except Exception:
-                pass
+            if render:
+                self.render()
             action_index = self.get_action_index_with_q_policy(state_index=state_index, eps_greedy=False)
             if verbose:
                 print("Current state index: {}".format(state_index))
@@ -185,9 +183,13 @@ class Policy():
                 print("Next state index: {}".format(state_index))
                 print("Is terminal state: {}".format(is_terminal_state))
             total_reward += reward
+        if render:
+            self.render()
+        return total_reward
+
+    def render(self):
         try:
             self.env.render()
         except Exception:
             pass
-        return total_reward
     
