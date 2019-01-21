@@ -2,7 +2,7 @@ import numpy as np
 from gym.spaces.discrete import Discrete
 
 class Agent():
-    def __init__(self, env=None, state_space=['start', 'end'], state_terminal = [False, True], action_space=['a', 'b'], alpha=0.1, epsilon=0.1, gamma=0.9, n=100, algorithm_used='tb', verbose=False):
+    def __init__(self, env=None, state_space=['start', 'end'], state_terminal = [False, True], action_space=['a', 'b'], alpha=0.01, epsilon=0.5, gamma=0.8, n=100, algorithm_used='tb', verbose=False):
         if env is not None:
             self.init_with_env(env)
         else:
@@ -29,11 +29,11 @@ class Agent():
         if type(env.action_space) != Discrete or type(env.observation_space) != Discrete:
             raise Exception("Non discrete spaces aren't implemented yet! Choose a discrete environement please.")
         self.env = env
-        self.state_space = range(env.observation_space.n)
-        self.state_terminal = [False for _ in range(env.observation_space.n)]
         self.state_count = env.observation_space.n
-        self.action_space = range(env.action_space.n)
+        self.state_space = np.array([i for i in range(self.state_count)])
+        self.state_terminal = np.array([False for _ in range(env.observation_space.n)])
         self.action_count = env.action_space.n
+        self.action_space = np.array([i for i in range(self.action_count)])
         self.is_init_with_env = True
 
     def init_with_spaces(self, state_space, state_terminal, action_space):
@@ -53,7 +53,7 @@ class Agent():
         
     def get_operation(self, operation_string, index):
         res = self.operations[operation_string][index % self.n]
-        if np.isnan(res) or (res.dtype == 'int32' and res == -1):
+        if np.isnan(res) or (res.dtype == 'int64' and res == -1):
             raise Exception("{} at index {} is trying to be get but isn't set".format(operation_string, index))
         return res
     def set_operation(self, operation_string, index, value):
@@ -62,12 +62,15 @@ class Agent():
     def get_action_index_with_q_policy(self, state_index, eps_greedy=True):
         if eps_greedy:
             temp = np.random.rand()
-            if temp < self.epsilon:
+            if temp < self.epsilon :
                 return np.random.randint(0, self.action_count)
         return np.argmax(self.q[state_index, :])
 
     def run_multiple_episode(self, number=100):
-        for _ in range(number):
+        self.n_episode = 0
+        while self.n_episode <= number:
+            self.n_episode += 1
+            self.epsilon = np.maximum(0.01, self.epsilon / (self.n_episode)**(0.1))
             self.run_episode(state_index=np.random.randint(0, self.state_count))
 
     def run_episode(self, state_index=None):
@@ -81,6 +84,13 @@ class Agent():
             self.t += 1
 
     def init_episode(self, state_index=None):
+        self.operations = {
+            'state': -1 * np.ones(shape=(self.n,), dtype='int64'),
+            'action': -1 * np.ones(shape=(self.n,), dtype='int64'),
+            'q': np.nan * np.ones(shape=(self.n,)),
+            'delta': np.nan * np.ones(shape=(self.n,)),
+            'c': np.nan * np.ones(shape=(self.n,)),
+        }
         state_index = self.init_state_index(state_index=state_index)
         self.set_operation('state', 0, state_index)
         action_index = self.get_action_index_with_q_policy(state_index,eps_greedy=True)
@@ -109,7 +119,7 @@ class Agent():
     def take_action(self, action_index):
         if self.is_init_with_env:
             next_state_index, reward, is_terminal, _ = self.env.step(self.action_space[action_index])
-        # default behavior to test the code
+            # next_state_index = np.argwhere(self.state_space==next_state)[0]
         else:
             next_state_index = action_index
             reward = -1 * action_index
@@ -171,8 +181,7 @@ class Agent():
         is_terminal_state = False
         total_reward = 0
         while not is_terminal_state:
-            if render:
-                self.render()
+            self.render(render)
             action_index = self.get_action_index_with_q_policy(state_index=state_index, eps_greedy=False)
             if verbose:
                 print("Current state index: {}".format(state_index))
@@ -183,13 +192,13 @@ class Agent():
                 print("Next state index: {}".format(state_index))
                 print("Is terminal state: {}".format(is_terminal_state))
             total_reward += reward
-        if render:
-            self.render()
+        self.render(render)
         return total_reward
 
-    def render(self):
-        try:
-            self.env.render()
-        except Exception:
-            pass
+    def render(self, render):
+        if render:
+            try:
+                self.env.render()
+            except Exception:
+                pass
     
