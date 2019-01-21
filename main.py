@@ -1,5 +1,5 @@
 import gym
-from policy import Policy
+from agent import Agent
 
 def simulate_episode():
     env = gym.make('MountainCar-v0')
@@ -17,10 +17,10 @@ def simulate_episode():
                 break
         print("Total reward: {}".format(total_reward))
 
-def test_policy():
-    policy = Policy(epsilon=0.5, verbose=True)
-    policy.run_multiple_episode()
-    print(policy.q)
-    print(policy.operations)
+def test_agent():
+    agent = Agent(epsilon=0.5, verbose=True)
+    agent.run_multiple_episode()
+    print(agent.q)
+    print(agent.operations)
 
 

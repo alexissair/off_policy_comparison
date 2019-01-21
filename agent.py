@@ -1,8 +1,8 @@
 import numpy as np
 from gym.spaces.discrete import Discrete
 
-class Policy():
-    def __init__(self, env=None, state_space=['start', 'end'], state_terminal = [False, True], action_space=['a', 'b'], alpha=0.1, epsilon=0.1, gamma=0.1, n=100, algorithm_used='tb', verbose=False):
+class Agent():
+    def __init__(self, env=None, state_space=['start', 'end'], state_terminal = [False, True], action_space=['a', 'b'], alpha=0.1, epsilon=0.1, gamma=0.9, n=100, algorithm_used='tb', verbose=False):
         if env is not None:
             self.init_with_env(env)
         else:
@@ -15,7 +15,7 @@ class Policy():
         self.gamma = gamma
         self.n = n
         self.algorithm_used = algorithm_used
-        self.q = np.random.random((self.state_count, self.action_count))
+        self.q = 10e-3 * np.random.rand(self.state_count, self.action_count)
         self.verbose = verbose
         self.operations = {
             'state': -1 * np.ones(shape=(n,), dtype='int64'),
@@ -27,7 +27,7 @@ class Policy():
 
     def init_with_env(self, env):
         if type(env.action_space) != Discrete or type(env.observation_space) != Discrete:
-            raise Exception("Non discrete spaces aren't implemented yet ! Choose a discrete environement please.")
+            raise Exception("Non discrete spaces aren't implemented yet! Choose a discrete environement please.")
         self.env = env
         self.state_space = range(env.observation_space.n)
         self.state_terminal = [False for _ in range(env.observation_space.n)]
