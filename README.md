@@ -37,7 +37,7 @@ $ pip install -r requirements.txt
 
 The next command will show you the different parameters available to test the different algorithms on an environement. 
 ```
-$ python plot.py --help
+$ python agent/plot.py --help
 ```
 
 By default, the algorithms that will be used to train an agent are:
