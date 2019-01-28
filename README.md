@@ -11,7 +11,7 @@ Marc G. Bellemare. The code here is a first implementation of the algorithm intr
 The code is designed to be used with gym environements. To simplify things in a first way, we restricted to environements with discrete action and observation spaces. The results present in this README have been produced with the "FrozenLake-v0" environement.
 
 The next graph shows the average reward on 500 episodes for our agent during training. This evaluation is performed during training each 500 episodes. The training is made on 50.000 episodes. Other parameters:  
-gamma = 0.95  
+$ \gamma = 0.95  $  
 lambda = 0.9  
 n = 100  
 alpha=0.01  
