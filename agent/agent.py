@@ -5,7 +5,7 @@ from gym.spaces.discrete import Discrete
 N_STEP_ALGORITHMS = ['tb', 'is', 'retrace', 'q_lambda']
 
 class Agent():
-    def __init__(self, env=None, state_space=['start', 'end'], state_terminal = [False, True], action_space=['a', 'b'], alpha=0.01, epsilon=0.5, gamma=0.8, lbda=1, n=100, evaluate_every=5000, episodes_to_evaluate=200, algorithm_used='tb', verbose=False, *args, **kwargs):
+    def __init__(self, env='FrozenLake-v0', state_space=['start', 'end'], state_terminal = [False, True], action_space=['a', 'b'], alpha=0.01, epsilon=0.2, gamma=0.95, lbda=0.9, n=100, evaluate_every=1000, episodes_to_evaluate=500, algorithm_used='tb', decay=True, verbose=False, *args, **kwargs):
         if env is not None:
             self.init_with_env(env)
         else:
@@ -13,12 +13,14 @@ class Agent():
         assert alpha > 0 and alpha <= 1
         self.alpha = alpha
         assert epsilon > 0
+        self.epsilon_start = epsilon
         self.epsilon = epsilon
         assert gamma > 0 and gamma <= 1
         self.gamma = gamma
         assert lbda > 0
         self.lbda = lbda
         self.n = n
+        self.decay = decay
         self.algorithm_used = algorithm_used
         self.evaluate_every = evaluate_every
         self.episodes_to_evaluate = episodes_to_evaluate
@@ -76,7 +78,7 @@ class Agent():
                 return np.random.randint(0, self.action_count)
         return np.argmax(self.q[state_index, :])
 
-    def run_multiple_episode(self, number=10000):
+    def run_multiple_episode(self, number=30000):
         print('')
         print('******')
         print('Training with algorithm: {}'.format(self.algorithm_used))
@@ -84,7 +86,8 @@ class Agent():
         while n_episode <= number:
             n_episode += 1
             # decrease epsilon
-            self.epsilon = np.minimum(self.epsilon / (n_episode)**(0.01), 10e-2)
+            if self.decay:
+                self.epsilon = self.epsilon_start * n_episode**(-1.0/3)
             self.run_episode(state_index=np.random.randint(0, self.state_count))
             self.rewards.append(self.episode_reward) 
             if n_episode % self.evaluate_every == 0:
@@ -141,7 +144,7 @@ class Agent():
     def init_state_index(self, state_index=None):
         if self.is_init_with_env:
             state_index = self.env.reset()
-        if state_index is None:
+        elif state_index is None:
             state_index = np.random.randint(0, self.state_count)
         return state_index
 
