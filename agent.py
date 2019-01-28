@@ -1,10 +1,11 @@
 import numpy as np
+import gym
 from gym.spaces.discrete import Discrete
 
 N_STEP_ALGORITHMS = ['tb', 'is', 'retrace', 'q_lambda']
 
 class Agent():
-    def __init__(self, env=None, state_space=['start', 'end'], state_terminal = [False, True], action_space=['a', 'b'], alpha=0.01, epsilon=0.5, gamma=0.8, lbda=1, n=100, evaluate_every=5000, episodes_to_evaluate=200, algorithm_used='tb', verbose=False):
+    def __init__(self, env=None, state_space=['start', 'end'], state_terminal = [False, True], action_space=['a', 'b'], alpha=0.01, epsilon=0.5, gamma=0.8, lbda=1, n=100, evaluate_every=5000, episodes_to_evaluate=200, algorithm_used='tb', verbose=False, *args, **kwargs):
         if env is not None:
             self.init_with_env(env)
         else:
@@ -34,6 +35,7 @@ class Agent():
         self.avg_rewards = []
 
     def init_with_env(self, env):
+        env = gym.make(env)
         if type(env.action_space) != Discrete or type(env.observation_space) != Discrete:
             raise Exception("Non discrete spaces aren't implemented yet! Choose a discrete environement please.")
         self.env = env
@@ -74,7 +76,7 @@ class Agent():
                 return np.random.randint(0, self.action_count)
         return np.argmax(self.q[state_index, :])
 
-    def run_multiple_episode(self, number=100):
+    def run_multiple_episode(self, number=10000):
         print('')
         print('******')
         print('Training with algorithm: {}'.format(self.algorithm_used))
@@ -226,6 +228,7 @@ class Agent():
                 break
         return g
 
+    # This methods plays ane episode following the Q-Policy
     def play_episode(self, state_index=None, verbose=False, render=False):
         state_index = self.init_state_index(state_index=state_index)
         is_terminal_state = False
