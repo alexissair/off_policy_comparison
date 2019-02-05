@@ -3,7 +3,7 @@
 ## Review by Alexis Sair & Antoine Hoorelbeke
 
 In the paper on this repository, we review the [*Safe and efficient off-policy reinforcement
-learning*] (https://arxiv.org/pdf/1606.02647.pdf) by Rémi Munos, Thomas Stepleton, Anna Harutyunyan and
+learning*](https://arxiv.org/pdf/1606.02647.pdf) by Rémi Munos, Thomas Stepleton, Anna Harutyunyan and
 Marc G. Bellemare. The code here is a first implementation of the algorithm introduced in the paper.  
 This [report](./report.pdf) is a theoretical review of the paper. It focuses mainly on explaining the proofs of the theorems introduced in the paper.
 
@@ -33,7 +33,7 @@ By default, the algorithms that will be used to train an agent are:
 - Retrace(&lambda;)
 - Q-learning
 
-We took inspiration from the implementation of the n-step algorithm introduced in the book [Reinforcement Learning: An Introduction] (http://incompleteideas.net/book/bookdraft2017nov5.pdf).
+We took inspiration from the implementation of the n-step algorithm introduced in the book [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/bookdraft2017nov5.pdf).
 
 ## Results
 
@@ -56,5 +56,5 @@ We see that the TB(&lambda;) and Retrace(&lambda;) are always amongst the best a
 
 ## References
 
-[Safe and Efficient Off-Policy Reinforcement Learning] (https://arxiv.org/pdf/1606.02647.pdf)
-[Reinforcement Learning: An Introduction] (http://incompleteideas.net/book/bookdraft2017nov5.pdf)
+[Safe and Efficient Off-Policy Reinforcement Learning](https://arxiv.org/pdf/1606.02647.pdf)
+[Reinforcement Learning: An Introduction](http://incompleteideas.net/book/bookdraft2017nov5.pdf)
