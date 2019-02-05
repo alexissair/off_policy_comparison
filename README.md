@@ -33,6 +33,8 @@ By default, the algorithms that will be used to train an agent are:
 - Retrace(&lambda;)
 - Q-learning
 
+We took inspiration from the implementation of the n-step algorithm introduced in the book [Reinforcement Learning: An Introduction] (http://incompleteideas.net/book/bookdraft2017nov5.pdf).
+
 ## Results
 
 The code is designed to be used with gym environements. To simplify things in a first way, we restricted to environements with discrete action and observation spaces. The results present in this file have been produced with the "FrozenLake-v0" environement.  We used a random behaviour policy.
@@ -51,3 +53,8 @@ We see that the TB(&lambda;) and Retrace(&lambda;) are always amongst the best a
 
 
 [frozen-lake]: ./results/frozen-lake-crossed.png
+
+## References
+
+[Safe and Efficient Off-Policy Reinforcement Learning] (https://arxiv.org/pdf/1606.02647.pdf)
+[Reinforcement Learning: An Introduction] (http://incompleteideas.net/book/bookdraft2017nov5.pdf)
