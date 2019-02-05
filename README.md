@@ -56,5 +56,5 @@ We see that the TB(&lambda;) and Retrace(&lambda;) are always amongst the best a
 
 ## References
 
-[Safe and Efficient Off-Policy Reinforcement Learning](https://arxiv.org/pdf/1606.02647.pdf)
+[Safe and Efficient Off-Policy Reinforcement Learning](https://arxiv.org/pdf/1606.02647.pdf)  
 [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/bookdraft2017nov5.pdf)
