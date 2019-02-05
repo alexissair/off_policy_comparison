@@ -231,7 +231,7 @@ class Agent():
                 break
         return g
 
-    # This methods plays ane episode following the Q-Policy
+    # This methods plays an episode following the non greedy Q-Policy
     def play_episode(self, state_index=None, verbose=False, render=False):
         state_index = self.init_state_index(state_index=state_index)
         is_terminal_state = False
