@@ -1,4 +1,4 @@
-# Self and efficient off-policy reinforcement learning
+# Safe and efficient off-policy reinforcement learning
 
 ## Review by Alexis Sair & Antoine Hoorelbeke
 
