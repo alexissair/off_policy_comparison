@@ -4,7 +4,8 @@
 
 In the paper on this repository, we review the *Safe and efficient off-policy reinforcement
 learning* by Rémi Munos, Thomas Stepleton, Anna Harutyunyan and
-Marc G. Bellemare. The code here is a first implementation of the algorithm introduced in the paper. 
+Marc G. Bellemare. The code here is a first implementation of the algorithm introduced in the paper.  
+This [report](./report.pdf) is a theoretical review of the paper. It focuses mainly on explaining the proofs of the theorems introduced in the paper.
 
 ## Reproduction
 
