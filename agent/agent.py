@@ -35,7 +35,8 @@ class Agent():
         }
         self.rewards = []
         self.avg_rewards = []
-
+    
+    # This function is used to init the agent with a gym environement
     def init_with_env(self, env):
         env = gym.make(env)
         if type(env.action_space) != Discrete or type(env.observation_space) != Discrete:
@@ -47,7 +48,8 @@ class Agent():
         self.action_count = env.action_space.n
         self.action_space = np.array([i for i in range(self.action_count)])
         self.is_init_with_env = True
-
+        
+    # This function is used to init the agent with custom action and state spaces
     def init_with_spaces(self, state_space, state_terminal, action_space):
         if isinstance(state_space, list):
             state_space = np.array(state_space)
@@ -68,6 +70,7 @@ class Agent():
         if np.isnan(res) or (res.dtype == 'int64' and res == -1):
             raise Exception("{} at index {} is trying to be get but isn't set".format(operation_string, index))
         return res
+    
     def set_operation(self, operation_string, index, value):
         self.operations[operation_string][index % self.n] = value
 
@@ -78,6 +81,9 @@ class Agent():
                 return np.random.randint(0, self.action_count)
         return np.argmax(self.q[state_index, :])
 
+    # This function is used to train the agent on multiple episodes
+    # Each self.evaluate_every episodes of training, the q-policy of the agent is evaluated on self.episodes_to_evaluate
+    # The average reward on those episodes is then stored
     def run_multiple_episode(self, number=30000):
         print('')
         print('******')
@@ -100,6 +106,7 @@ class Agent():
         print('******')
         print('')
 
+    # Run one episode of training
     def run_episode(self, state_index=None):
         if self.algorithm_used in N_STEP_ALGORITHMS:
             self.init_episode(state_index=state_index)
@@ -168,6 +175,7 @@ class Agent():
         self.episode_reward += reward
         return reward, next_state_index, is_terminal
 
+    # This function is used if the agent is init with custom environements
     def is_terminal_state(self, state_index):
         return self.state_terminal[state_index]
 
@@ -187,6 +195,7 @@ class Agent():
     def get_q_expectation(self, state_index):
         return self.epsilon * np.sum(self.q[state_index, :]) + (1 - self.epsilon) * np.max(self.q[state_index, :])
 
+    # This factor depends on the algorithm chosen for the n-step
     def get_c(self, state_index, action_index):
         c = 1
         if self.algorithm_used == 'tb':
@@ -210,6 +219,7 @@ class Agent():
             c = self.lbda * np.minimum(c, 1)
         return c
 
+    # This is the behaviour policy
     def select_arbitrarly_action(self):
         return np.random.randint(0, self.action_count)
 
@@ -232,6 +242,7 @@ class Agent():
         return g
 
     # This methods plays an episode following the non greedy Q-Policy
+    # It is used to evaluate the agent
     def play_episode(self, state_index=None, verbose=False, render=False):
         state_index = self.init_state_index(state_index=state_index)
         is_terminal_state = False
