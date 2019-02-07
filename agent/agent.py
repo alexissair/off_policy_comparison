@@ -4,6 +4,7 @@ from gym.spaces.discrete import Discrete
 
 N_STEP_ALGORITHMS = ['tb', 'is', 'retrace', 'q_lambda']
 
+# The implementation of this agent is base on the one presented in the book of Sutton and Barto (the n-step tree backup)
 class Agent():
     def __init__(self, env='FrozenLake-v0', state_space=['start', 'end'], state_terminal = [False, True], action_space=['a', 'b'], alpha=0.01, epsilon=0.2, gamma=0.95, lbda=0.9, n=100, evaluate_every=1000, episodes_to_evaluate=500, algorithm_used='tb', decay=True, verbose=False, *args, **kwargs):
         if env is not None:
@@ -196,30 +197,45 @@ class Agent():
         return self.epsilon * np.sum(self.q[state_index, :]) + (1 - self.epsilon) * np.max(self.q[state_index, :])
 
     # This factor depends on the algorithm chosen for the n-step
+    # pi denotes the eps greedy policy induced from q
+    # for a* = argmax(q(s, .)), we have pi(a,* s) = (1 - eps) + eps / action_count
+    # if a != a* , we have pi(a, s) = eps / action_count
+    # mu is the behaviour policy (here we only implemented the case where mu is uniform)
+    # mu(a, s) = 1 / action_count for all a, s
     def get_c(self, state_index, action_index):
         c = 1
         if self.algorithm_used == 'tb':
+            # For tree back up , c = lbda * pi(a, s)
             if self.q[state_index, action_index] < np.max(self.q[state_index, :]):
+                # if the action isn't the argmax of q
                 c = self.epsilon / self.action_count
             else:
+                # if the action is the argmax of q
                 c = 1 - self.epsilon + self.epsilon / self.action_count
             c *= self.lbda
         elif self.algorithm_used == 'is':
+            # For importance sampling, c = pi(a, s) / mu(a, s)
             if self.q[state_index, action_index] < np.max(self.q[state_index, :]):
+                # if the action isn't the argmax of q
                 c = self.epsilon
             else:
+                # if the action is the argmax of q
                 c = (1 - self.epsilon) * self.action_count + self.epsilon
         elif self.algorithm_used == 'q_lambda':
+            # For Q_lambda, c = lbda
             c = self.lbda
         elif self.algorithm_used == 'retrace':
+            # For retrace, c = lbda  min(1, pi(a, s) / mu(a, s))
             if self.q[state_index, action_index] < np.max(self.q[state_index, :]):
+                # if the action isn't the argmax of q
                 c = self.epsilon
             else:
+                # if the action is the argmax of q
                 c = (1 - self.epsilon) * self.action_count + self.epsilon
             c = self.lbda * np.minimum(c, 1)
         return c
 
-    # This is the behaviour policy
+    # This is the behaviour policy mu
     def select_arbitrarly_action(self):
         return np.random.randint(0, self.action_count)
 
@@ -229,6 +245,7 @@ class Agent():
         a_tho = self.get_operation('action', self.tho)
         self.q[s_tho, a_tho] += self.alpha * (g - self.q[s_tho, a_tho])
 
+    # See the implementation of Sutton and Barto for more details about g
     def get_g(self):
         z = 1
         g = self.get_operation('q', self.tho)
